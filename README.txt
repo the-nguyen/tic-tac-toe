@@ -1,3 +1,7 @@
+# Authors
+- The NGUYEN
+- Minh PHAM
+
 # Compilation:
 - To compile both client and server: $ make all
 - To compile only the client: $ make client
