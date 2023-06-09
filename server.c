@@ -30,6 +30,13 @@ const char mym_msg[] = { MYM };
 const char connection_failed_msg[] = { END, 0xff };
 const char invalid_move_msg[] = { TXT, 'I', 'n', 'v', 'a', 'l', 'i', 'd', ' ', 'm', 'o', 'v', 'e', '.', ' ', 'P', 'l', 'e', 'a', 's', 'e', ' ', 't', 'r', 'y', ' ', 'a', 'g', 'a', 'i', 'n', '!', '\0' };
 
+/**
+ * @brief Listen to the dedicated port for incoming messages
+ * @param buf Point to a buffer for storing the first incoming message
+ * @param from Point to a struct for storing the source address of the message
+ * @param from_len Point to the size of @param from
+ * @return Nothing
+*/
 void listen_to_port(char **buf, struct sockaddr_in *from, socklen_t *from_len) {
     int buf_size = INCREMENT_SIZE;
     *buf = malloc(buf_size);
@@ -42,6 +49,11 @@ void listen_to_port(char **buf, struct sockaddr_in *from, socklen_t *from_len) {
     recvfrom(sock_fd, *buf, buf_size, 0, (struct sockaddr *)from, from_len);
 }
 
+/**
+ * @brief Print the current status of a game
+ * @param board Buffer of the board
+ * @return Nothing
+*/
 void print_board(char board[3][3]) {
     int i, j;
     printf("+-+-+-+\n");
@@ -104,6 +116,12 @@ char check_game_status(char board[3][3]) {
     return 0;
 }
 
+/**
+ * @brief Create a FYI message to send to the players
+ * @param buf Point to a buffer for storing the message
+ * @param len Point to the length of the message
+ * @return Nothing
+*/
 void create_fyi_msg(char **buf, size_t *len, char board[3][3]) {
     char *fyi_msg = malloc(2 + 3 * 9);
     fyi_msg[0] = FYI;
