@@ -25,6 +25,13 @@ struct sockaddr_in to;
 const char init_msg[] = { TXT, 'H', 'e', 'l', 'l', 'o', '\0' };
 char mov_msg[] = { MOV, 0, 0 };
 
+/**
+ * @brief Receive message from server.
+ * Check if a message is sent from the same server over time by looking through the from.sin.s_addr. 
+ * @param buf pointer to the buffer will be used to store the message.
+ * @return Nothing (void).
+
+*/
 void receive_from_server(char **buf) {
     int buf_size = INCREMENT_SIZE;
     *buf = malloc(buf_size);
@@ -47,6 +54,10 @@ void receive_from_server(char **buf) {
     recvfrom(sock_fd, *buf, buf_size, 0, (struct sockaddr *)&from, &from_len);
 }
 
+/**
+ * @brief Take input from user and send MYM message to server.
+ * @return Nothing (void).
+*/
 void make_your_move() {
     printf("Now is your turn\n");
     while (1) {
@@ -79,6 +90,11 @@ void make_your_move() {
     printf("Wait for server to validate your move/for your opponent to make a move ...\n");
 }
 
+/**
+* @brief Process the FYI message from server then draw and print a 3x3 board for the user.
+* @param buf Message FYI received from server.
+* @return Nothing (void).
+*/
 void for_your_info(const char *const buf) {
     char board[3][3];
     memset(board, 0, 3 * 3);
@@ -113,7 +129,7 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Missing argument(s). Please enter IP address and port number\n");
         return 1;
     }
-
+    // fill the server's information to the struct sockaddr_in.
     memset(&to, 0, sizeof(to));
     to.sin_family = AF_INET;
     if (inet_pton(AF_INET, argv[1], &to.sin_addr) == 0) {
@@ -125,10 +141,10 @@ int main(int argc, char *argv[]) {
         return 3;
     }
     to.sin_port = htons(to.sin_port);
-
+    
     sock_fd = socket(to.sin_family, SOCK_DGRAM, 0);
     printf("Socket created\n");
-
+    // send the first hello message to connect to the server.
     sendto(sock_fd, init_msg, strlen(init_msg) + 1, 0, (struct sockaddr *)&to, sizeof(to));
     printf("Connecting to server %s:%hu ...\n", argv[1], ntohs(to.sin_port));
 
